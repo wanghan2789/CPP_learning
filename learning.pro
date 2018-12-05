@@ -8,3 +8,6 @@ SOURCES += main.cpp
 include(deployment.pri)
 qtcAddDeployment()
 
+DISTFILES += \
+    README.md
+
