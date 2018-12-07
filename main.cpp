@@ -1,4 +1,6 @@
 #include <iostream>
+#include<cstring>
+#include<string>
 
 using namespace std;
 
@@ -95,6 +97,16 @@ int TestFor()
     return 0;
 }
 
+int TestString()
+{
+    string Test = "abcdef";
+    cout<<Test[2]<<endl;
+    cout<<(Test[5]==Test[2])<<endl;
+    cout<<Test.size()<<endl;
+    for(char i: Test) i='0';
+    cout<<Test<<endl;
+}
+
 int main()
 {
 //    inout();
@@ -104,7 +116,10 @@ int main()
 //    auto c = 1.0+1;
 //    arrlis();
 //    firstconfirm();
-    TestFor();
+//    TestFor();
+//    char ac[8] = "abc";
+//    cout<<strlen(ac)<<endl;  //3
+    TestString();
     int a = 0;
     cout << "Hello World!" << endl;
     return 0;
