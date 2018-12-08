@@ -107,6 +107,8 @@ int TestString()
     cout<<Test<<endl;
 }
 
+
+
 int main()
 {
 //    inout();
@@ -119,7 +121,7 @@ int main()
 //    TestFor();
 //    char ac[8] = "abc";
 //    cout<<strlen(ac)<<endl;  //3
-    TestString();
+//    TestString();
     int a = 0;
     cout << "Hello World!" << endl;
     return 0;
