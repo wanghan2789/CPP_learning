@@ -1,6 +1,7 @@
 #include <iostream>
 #include<cstring>
 #include<string>
+#include<vector>
 
 using namespace std;
 
@@ -107,7 +108,27 @@ int TestString()
     cout<<Test<<endl;
 }
 
+int sanmuTest()
+{
+    int a = 10, b = 1;
+    int res = a>b?a:b;
+    cout<<res<<endl;
+    return 0;
+}
 
+int sizeofTest()
+{
+    int *ptr;
+    double *ptrd;
+    cout<<sizeof(*ptr)<<endl;
+    cout<<sizeof(ptr)<<endl;
+    cout<<sizeof(*ptrd)<<endl;
+    vector<int>T1(10);
+    vector<double>T2(10);
+    cout<<sizeof(T1)<<' '<<sizeof(T1)<<endl;
+//    cout<<*ptr<<endl;
+    return 0;
+}
 
 int main()
 {
@@ -122,6 +143,8 @@ int main()
 //    char ac[8] = "abc";
 //    cout<<strlen(ac)<<endl;  //3
 //    TestString();
+//    sanmuTest();
+    sizeofTest();
     int a = 0;
     cout << "Hello World!" << endl;
     return 0;
