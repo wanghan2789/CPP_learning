@@ -148,6 +148,12 @@ int ErrorTest()
     return 0;
 }
 
+int TestPara(int a)
+{
+    cout<<a<<endl;
+    return 0;
+}
+
 int main()
 {
 //    inout();
@@ -163,7 +169,9 @@ int main()
 //    TestString();
 //    sanmuTest();
 //    sizeofTest();
-    ErrorTest();
+//    ErrorTest();
+    int b;
+    TestPara(b);
     int a = 0;
     cout << "Hello World!" << endl;
     return 0;
