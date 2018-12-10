@@ -130,6 +130,24 @@ int sizeofTest()
     return 0;
 }
 
+int ErrorTest()
+{
+    int a = 0;
+    try
+    {
+        if(!a) throw runtime_error("this is test");
+    }
+    catch(exception)
+    {
+        cout<<a<<endl;
+    }
+//    catch(runtime_error err)
+//    {
+//        cout<<err.what()<<' '<<a<<endl;
+//    }
+    return 0;
+}
+
 int main()
 {
 //    inout();
@@ -144,7 +162,8 @@ int main()
 //    cout<<strlen(ac)<<endl;  //3
 //    TestString();
 //    sanmuTest();
-    sizeofTest();
+//    sizeofTest();
+    ErrorTest();
     int a = 0;
     cout << "Hello World!" << endl;
     return 0;

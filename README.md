@@ -513,3 +513,99 @@
     char* ptr = "hello freind!";
     int i = reinterpret_cast<int>(ptr); 
     ```
+
+# 第五章 语句
+
+## No.1 基础概念
+
+*  ; 空语句, 也就是占位符pass
+* 多余的空语句并不总是无害的
+
+## No.2 条件语句
+
+* 基本结构
+
+  ```c++
+  if condition1{}
+  else if condition2{}
+  else{}
+  ```
+
+* 悬垂else, 就近原则
+
+* 你可以使用花括号使得else与花括号前的if强制匹配; 
+
+* switch语句方便的可以为我们提供对固定选项中做出选择
+
+  ```c++
+  switch (ch)
+  {
+      case 'a':
+          statement;
+          break;
+      case 'b':
+          statment2;
+          break;
+      default:
+          ....
+  }
+  //一条语句与第一项匹配成功，它会一直执行到句子尾部或者与被退出
+  ```
+
+* 字符库函数cctype
+
+  * isalpha, isdigit, islower, isupper
+
+## No.3 循环语句
+
+* 定义在while条件部分或者循环体内部的变量，每次循环都要经历创建和销毁
+
+* 范围for语句
+
+  ```C++
+  vector<int> v(9);
+  ...
+  for(aotu &lable : v){}  //遍历迭代器
+  ```
+
+* do while是先执行循环体在检查循环条件; 
+
+## No.4 跳转语句
+
+* break终端当前距离它最近的语句
+* continue停止当前最近的循环, 并立即进行下一次
+* goto无条件跳转到同一条函数的另一条语句
+
+## No.5 异常处理
+
+* throw raise(抛出)一个异常
+
+  ```C++
+  throw runtime_error("this is a test"); 
+  int a = 0;
+      try
+      {
+          if(!a) throw runtime_error("this is test");
+      }
+      catch(runtime_error err)
+      {
+          cout<<err.what()<<' '<<a<<endl;
+      }
+  ```
+
+* try 开始 catch子句结束。try抛出的异常会被某个catch处理掉, 因此这部分又叫做异常处理代码。
+
+* exception class, 用于throw和相关的catch之间传递异常的具体信息
+
+  ```c++
+  try
+      {
+          throw runtime_error("this is test");
+      }
+  catch(exception)
+      {
+          cout<<a<<endl;
+      }
+  ```
+
+  ​
