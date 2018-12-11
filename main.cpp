@@ -154,6 +154,14 @@ int TestPara(int a)
     return 0;
 }
 
+template <typename ScalarT>
+void TestTemplate(ScalarT a)
+{
+    cout<<a<<endl;
+}
+
+template void TestTemplate(int a);
+
 int main()
 {
 //    inout();
@@ -170,9 +178,10 @@ int main()
 //    sanmuTest();
 //    sizeofTest();
 //    ErrorTest();
-    int b;
-    TestPara(b);
+//    int b;
+//    TestPara(b);
     int a = 0;
+//    TestTemplate(a);
     cout << "Hello World!" << endl;
     return 0;
     //this is a re new test
