@@ -2,7 +2,7 @@
 #include<cstring>
 #include<string>
 #include<vector>
-
+#include<cmath>
 using namespace std;
 
 class Testconst
@@ -21,6 +21,26 @@ public:
         int c = this->b + 1;
     }
 };
+
+
+
+class TestInitial
+{
+
+friend void see(TestInitial a);
+
+public:
+    int a;
+    int b;
+
+private:
+    int my_secreat = 9;
+};
+
+void see(TestInitial a)
+{
+    cout<<a.my_secreat<<endl;
+}
 
 int inout()
 {
@@ -182,6 +202,10 @@ int main()
 //    TestPara(b);
     int a = 0;
 //    TestTemplate(a);
+    TestInitial mytest;
+    see(mytest);
+//    cout <<mytest.a<< endl;
+//    cout <<mytest.b<< endl;
     cout << "Hello World!" << endl;
     return 0;
     //this is a re new test
