@@ -5,7 +5,7 @@
 ![数据库](/s_ico/data.png)                ![网络基础](/s_ico/net.png)
 
 
-<div align="center";style="width:100px;border:110px solid white">
+<div style="width:100px;border:110px solid white">
 <p style="float:left">
 　<img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
 <br/>   
