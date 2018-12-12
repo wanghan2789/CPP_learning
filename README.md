@@ -6,7 +6,7 @@
 
 
 
-<div style="width:450px;border:110px solid rgb(241, 0, 0)">
+<div style="width:300px;border:110px solid white">
  <p style="float:left">
  <img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
  <br/>   
