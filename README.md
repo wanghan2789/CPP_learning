@@ -1,3 +1,36 @@
+你可以通过下面的链接快速到访你想去的地方，当然你也可以直接浏览本页面，本页面现在主要包含C++的相关知识。
+
+<table width="660" align="center">
+<tr>
+
+<td width="110"><img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">C++学习笔记</span>
+</td>
+
+<td width="110"><img src="/s_ico/al.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">基础算法</span>
+</td>
+
+<td width="110"><img src="/s_ico/py.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">Py和人工智能</span>
+</td>
+
+<td width="110"><img src="/s_ico/data.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">数据库</span>
+</td>
+
+<td width="110"><img src="/s_ico/sys.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">操作系统</span>
+</td>
+
+<td width="110"><img src="/s_ico/net.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;display:block;">计算机网络</span>
+</td>
+    　　 
+</tr>
+</table>
+
+
 # 第一章 开启你的C++学习之旅
 
 ## No.1 概述--起源与面向对象
@@ -1064,32 +1097,3 @@
 
 
 
-<table width="660">
-<tr>
-
-<td width="110"><img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">C++学习笔记</span>
-</td>
-
-<td width="110"><img src="/s_ico/al.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">基础算法</span>
-</td>
-
-<td width="110"><img src="/s_ico/py.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">Py和人工智能</span>
-</td>
-
-<td width="110"><img src="/s_ico/data.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">数据库</span>
-</td>
-
-<td width="110"><img src="/s_ico/sys.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">操作系统</span>
-</td>
-
-<td width="110"><img src="/s_ico/net.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">计算机网络</span>
-</td>
-    　　 
-</tr>
-</table>
