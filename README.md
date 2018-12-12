@@ -19,6 +19,8 @@
 </p>
 </div>
 
+
+
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>MY_Git</title>
@@ -26,6 +28,8 @@
 <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<link rel="stylesheet" type="text/css" href="css/reset.css">
 <ul class="goods_type_list clearfix">
    <li>
   <a href="detail.html"><img src="/s_ico/cpp.png"></a>
