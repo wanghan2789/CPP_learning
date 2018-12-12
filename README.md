@@ -19,6 +19,52 @@
 </p>
 </div>
 
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>MY_Git</title>
+<link rel="stylesheet" type="text/css" href="css/reset.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<ul class="goods_type_list clearfix">
+   <li>
+  <a href="detail.html"><img src="/s_ico/cpp.png"></a>
+  <h4><a href="detail.html">C++学习笔记</a></h4>
+  </li>
+
+ <li>
+  <a href="#"><img src="/s_ico/al.png"></a>
+  <h4><a href="#">基础算法</a></h4>
+        
+ </li>
+
+<li>
+ <a href="#"><img src="/s_ico/sys.png"></a>
+   <h4><a href="#">操作系统</a></h4>
+       
+</li>
+
+ <li>
+  <a href="#"><img src="/s_ico/py.png"></a>
+   <h4><a href="#">Py和人工智能</a></h4>
+       
+ </li>
+
+ <li>
+   <a href="#"><img src="/s_ico/data.png"></a>
+  <h4><a href="#">数据库</a></h4>
+       
+ </li>
+
+
+
+ <li>
+ <a href="#"><img src="/s_ico/net.png"></a>
+ <h4><a href="#">网络基础</a></h4>
+        
+ </li>
+</ul>
+
 
 
 
