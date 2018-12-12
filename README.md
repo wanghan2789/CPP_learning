@@ -1,4 +1,4 @@
- <div align="left"> ![C++学习笔记](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/cpp.png)C++学习笔记   <div align="right">![基础算法](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/al.png)基础算法
+![C++学习笔记](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/cpp.png)C++学习笔记   <div align="right">![基础算法](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/al.png)基础算法
 
 <div align="left">![操作系统](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/sys.png)操作系统</div>   <div align="right">![Py和人工智能基础](https://github.com/wanghan2789/CPP_learning/tree/master/s_ico/al.png)Py和人工智能基础</div> 
 
