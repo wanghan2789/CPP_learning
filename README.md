@@ -2,29 +2,46 @@
 
 <table width="660" align="center">
 <tr>
-
-<td width="110"><img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
+<td width="110">
+<a style="text-decoration:none;color: #444" href="CPP_learning" title="C++学习笔记">
+<img src="/s_ico/cpp.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">C++学习笔记</span>
+</a>
 </td>
 
-<td width="110"><img src="/s_ico/al.png" alt="Sample"  width="100" height="100">
+<td width="110">
+<a style="text-decoration:none;color: #444" href="www.baidu.com" title="基础算法">
+<img src="/s_ico/al.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">基础算法</span>
+</a>
 </td>
 
-<td width="110"><img src="/s_ico/py.png" alt="Sample"  width="100" height="100">
+<td width="110">
+<a style="text-decoration:none;color: #444" href="www.baidu.com" title="Py和人工智能">
+<img src="/s_ico/py.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">Py和人工智能</span>
+</a>
 </td>
 
-<td width="110"><img src="/s_ico/data.png" alt="Sample"  width="100" height="100">
-</br><span style="text-align: center;display:block;">数据库</span>
+<td width="110">
+<a style="text-decoration:none;color: #444" href="www.baidu.com" title="数据库">
+<img src="/s_ico/data.png" alt="Sample"  width="100" height="100">
+</br><span style="text-align: center;">数据库</span>
+</a>
 </td>
 
-<td width="110"><img src="/s_ico/sys.png" alt="Sample"  width="100" height="100">
+<td width="110">
+<a style="text-decoration:none;color: #444" href="www.baidu.com" title="操作系统">
+<img src="/s_ico/sys.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">操作系统</span>
+</a>
 </td>
 
-<td width="110"><img src="/s_ico/net.png" alt="Sample"  width="100" height="100">
+<td width="110">
+<a style="text-decoration:none;color: #444" href="www.baidu.com" title="计算机网络">
+<img src="/s_ico/net.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">计算机网络</span>
+</a>
 </td>
     　　 
 </tr>
@@ -1093,7 +1110,197 @@
 
 ## No.4 三五法则
 
-* ​
+* 需要析构函数的类也需要拷贝和赋值操作
+  * 当我们决定一个类是否需要自己版本的拷贝构造函数的时候，一个基本的原则是首先确定这个类是否需要一个析构函数。对析构函数的需求要比对拷贝构造函数或者赋值运算符的需求更为明显，如果一个类需要一个析构函数，那么它大概率也需要一个拷贝构造函数和一个拷贝赋值运算符。
+  * 自定义析构函数，那么必须自定义拷贝赋值运算符和拷贝构造函数。
+* 需要拷贝操作的类也需要赋值操作，反之亦然
+
+
+## No.5 default
+
+* 我们可以通过将靠被控制成员定义为 = default来显式要求编译器生成合成的版本。
+
+* ```C++
+  class TestDefaultClass
+  {
+  public:
+      TestDefaultClass() = default;
+      TestDefaultClass(const TestDefaultClass&) = default;
+      TestDefaultClass& operator =(const TestDefaultClass&);
+      ~TestDefaultClass() = default;
+  };
+  ```
+
+* 阻止拷贝
+
+  * 定义删除的函数。对于删除函数，我们虽然声明了它们，但是我们不能以任何方式使用它们。在参数列表后面追加 = delete; 来指出我们希望的函数是删除的。
+  * =delete; 必须出现在函数第一次声明的时候。
+  * 析构函数不能使删除的成员。如果析构函数是删除的函数，那么说明析构函数被阻止了，于是我们会发生无法销毁类对象的问题。
+  * 合成的拷贝控制成员可能是删除的。
+    * 类的析构函数是不可访问或者删除的，那么合成析构函数被定义为删除;
+    * 如果类的某个成员的拷贝构造函数是删除或者不可访问的，那么累的合成拷贝构造函数是删除的。同样析构函数是删除的或者不可访问的，那么合成拷贝构造函数也会被定义为删除。
+    * 如果类的某个成员的拷贝赋值运算符是删除的或不可访问，或者类有个const或引用，那么累的合成拷贝赋值运算符被定义为删除的。
+    * 类有一个const成员，它没有类初始化且其类型未显示定义默认构造函数，那么该类的默认构造函数是删除的。
+    * 本质上，如果一个类有数据成员不能默认构造拷贝赋值或者销毁，那么对应的函数成员将会被定义为delete。
+
+## No.6 拷贝控制和资源管理
+
+* 一般来说，管理类外资源的类必须要定义拷贝控制成员。
+
+  * 可以定义拷贝操作，让类的行为看起来像一个值或者指针。
+
+  * 如果一个类像一个值，那么意味着它应该有自己的状态，当我们拷贝一个像值的对象的时候，副本和原对象是完全独立的。改变副本不应该影响母体。
+
+  * 行为像指针的类则共享状态。当我们拷贝一个这样的类的对象的时候，副本和原对象使用相同的底层数据，改变副本也会改变原对象。
+
+* 行为像值的类
+
+  * 每个对象都有一份属于自己的拷贝。
+
+  * 你需要定义一个拷贝构造函数，完成拷贝而不是拷贝指针。
+
+  * 定义析构函数。
+
+  * 定义拷贝运算符释放当前的类，并从右侧运算对象拷贝。
+
+  * ```C++
+    class TestClassValue
+    {
+    public:
+        TestClassValue(const string &s=string()):
+        Ptr(new string(s)){}
+        TestClassValue(const TestClassValue&my_class):
+            Ptr(new string(*my_class.Ptr)){}
+        TestClassValue& operator=(const TestDefaultClass&);
+    private:
+        string *Ptr;
+    };
+    ```
+
+* 类值拷贝赋值运算符通常结合了析构函数和构造函数的操作。类似析构函数，赋值操作先销毁左值的资源，然后从右侧运算对象拷贝数据。
+
+* 拷贝底层 -> 释放旧内存 ->将右值拷贝到本对象 -> 返回本对象
+
+  ```C++
+      TestClassValue& operator=(const TestDefaultClass&deal)
+      {
+          auto new_Ptr = new string(*deal.Ptr);
+          delete Ptr;
+          this->Ptr = new_Ptr;
+          return *this;
+      }
+  ```
+
+* 当你编写一个赋值运算符，如果他要赋值给自身必要能够正常工作; 大多数赋值运算符组合了析构函数和拷贝构造函数。
+
+* 定义行为像指针的类
+
+  * 这个时候你需要定义拷贝构造函数和拷贝赋值运算符。
+  * 只有当最后一个指针也被销毁了的时候才会释放。
+  * 你可以使用引用计数来方便的处理这种情况。
+
+* 引用计数
+
+  * 除了初始化对象之外，每个构造函数还要创建一个引用计数来记录有多少个对象和正在创建的对象共享状态。计数器初始化为1。
+
+  * 拷贝构造函数不重新分配计数器，二是拷贝给定对象的成员包括计数器，拷贝构造函数递增共享的计数器。
+
+  * 析构函数递减计数器，指出共享状态的用户少了一个，如果为0那么析构函数释放状态。
+
+  * 拷贝赋值运算符递增右侧的运算对象的计数器，递减左侧的计数器。
+
+  * ```C++
+    class TestClassCount
+    {
+    public:
+        TestClassCount(const string&s = string()):
+        Ptr(new string(s), i(0), useing(new size_t(1))){}
+        TestClassCount(const TestClassCount& my_class):
+            Ptr(my_class.Ptr),i(my_class.i),useing(my_class.useing)
+        {useing++;}
+        TestClassCount& operator= (const TestClassCount&);
+    private:
+        int i;
+        size_t* useing;
+        string* Ptr;
+    };
+    ```
+
+
+## No.7 类的动态内存管理
+
+### 模拟STL Vector的设计
+
+* vector每个添加元素的成员函数会检查是否有足够多的空间来容纳元素，如果有那么会通过构造函数在下一个可用位置构造对象。如果没有，那么需要执行扩容: 将已有元素移动到新的空间，释放旧的空间，添加新的元素。
+* 我们在STrVec中采用类似的策略，使用一个allocator来获得原始内存，由于这块内存没有被构造，我们将需要添加的新元素用allocator的construct成员在原始内存中创建对象。类似的，删除元素我们使用destroy成员销毁元素。
+* 成员中包含三个指针成员
+  * *element is head
+  * *first_free
+  * *cap is capacity
+* 除此之外，StrVec还有一个名为alloc的静态成员，其类型为allocator<string>。alloc成员会分配StrVec的内存。
+* alloc_n_copy会分配内存，并拷贝一个给定范围的元素
+* free会销毁构造的元素并释放内存
+* chk_n_alloc保证至少有一个新元素的空间。如果没有，那么会调用惹allocate来分配更多内存。
+* 使用construct: 函数push_back调用chk_n_alloc确保空间容纳新的元素。如果需要，那么会调用reallocate。
+* free成员，free成员首先负责destroy元素，然后释放分配的内存空间。for循环，从构造的微元素开始，到首元素为止，逆序销毁所有元素。
+* 再重新分配内存的过程中移动而不是拷贝元素。
+  * 为一个新的更大的数组分配内存
+  * 在内存空间的前一部分构造对象，保存现有元素
+  * 销毁原内存里面的元素，并且你要释放它
+* 移动构造函数和std::move
+  * 移动构造函数通常是将资源从给定对象移动而不是拷贝到正在创建的对象。
+  * move标准库函数，我们使用的时候直接调用 std::move因为一般不会提供using声明
+* 每次重新分配你可以分配两倍大小的内存空间
+
+### 对象移动
+
+* 为了支持移动操作，新标准引入了新的引用类型，右值引用。所谓右值引用就是必须绑定到右值的引用。我们需要通过&&来获取右值引用。右值引用只能绑定在一个即将销毁的对象上。我们可以自由的将一个右值引用的资源移动到另一个对象中。
+
+* 左值和右值是表达式的属性。一些表达式生成或者要求左值，一些要求右值。一般来说左值表达式表示的是对象的身份，右值表达式表达的是对象的值。
+
+* 右值引用是某个对象的另一个名字。为了和常规引用分开，我们把普通的引用叫做左值引用。普通引用不能绑定转换的表达式，字面常量，或者返回右值的表达式。而右值引用的绑定特性与左值引用的绑定特性相反。顺便，const引用可以绑定在右值。
+
+* 左值持久右值短暂。右值要么是字面常量，要么是表达式求值过程中创建的临时对象。右值引用的对象即将要被毁灭，该对象没有其他用户。
+
+* 虽然不能将一个右值引用直接绑定在一个左值上，但是通过move函数我们可以改变这一情况。这会告诉编译器，现在的这个左值，你要去像右值那样处理它。
+
+  ```c++
+  int &&r = std::move(left);
+  ```
+
+* 移动构造函数和移动赋值运算符
+
+  * 这个时候是窃取对象的资源而不是拷贝资源。
+
+  * 移动构造函数的第一个参数是该类类型的一个引用，不同于拷贝构造函数的是，这个引用参数在移动函数中是一个右值引用。与拷贝构造函数一样，任何额外的参数必须都有默认实参。
+
+  * 窃取s的资源然后释放s
+
+  * ```C++
+    clna::clna(clna &&inpara) noexcept 
+        : ele1(inpara.ele1), ele2(inpara.ele2)
+        {
+          inpara.ele1=inpara.ele2=nullptr;
+        }
+    ```
+
+* noexcept的含义是不要抛出任何异常。
+
+* 移动操作运算符的定义: 不是自己, 释放, 窃取。
+
+* 移动之后原对象必须是可以析构的。
+
+* 只有当一个类没有定义任何自己版本的拷贝控制成员，并且它的所有的数据成员都能移动构造或者移动赋值，那么编译器才会为它合成移动构造函数或者移动赋值运算符。
+
+* 定义了一个移动构造函数或者移动赋值运算符的类必须也定义自己的拷贝操作，否则默认这个定义是删除的。
+
+* 移动右值，拷贝左值。但是如果没有移动构造函数，右值也会被拷贝。
+
+* 所有五个拷贝控制成员应该视为一体，定义了一个就应当全部定义。
+
+* 建议不要随意使用move。
+
+* 一个函数同时用const和&修饰的话，你需要const &的顺序
 
 
 
