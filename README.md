@@ -1426,3 +1426,130 @@
   * 例如，当基类的构造函数调用派生类虚函数很可能导致coredump。执行基类构造函数的时候，派生类还没有初始化。
 * 你可以用using语句"继承"父类的构造函数。但是这样做不会改变构造函数的级别。在父类中的级别直接作用于子类，不受转变的影响。且这个时候不兼容explicit或者constexpr
 * 构造函数的默认实参不会被保留下来。它会保留下来包含全部形参的构造函数以及仅包含不含有实参部分的构造函数。
+
+
+
+
+# 第十一章 IO库
+
+* istream 输入流
+* ostream 输出流
+* cin 标准输入
+* cout 标准输出
+* cerr 输出错误信息
+* getline 读取一行
+
+## No.1 IO类
+
+* iosteram定义了读写流的基本类型
+* fstream定义了读写命名文件的类型
+* sstream定义了读写内存string对象的类型
+* 为了兼容宽字符对象，操纵例如wchar_t类型 你可以使用wcin wcout wcerr
+* IO对象不存在拷贝和赋值，也因此我们不能将形参或者返回类型设置为流类型，读写一个IO会改变其状态，传递和返回的引用也不能是const
+
+### 条件状态
+
+* 确定一个流的状态的最简单方法  while(cin >> word)
+
+* practice1
+
+* ```C++
+  istream& TestPractice8(istream& in)
+  {
+      //输入一个流的引用，遇到文件终止符结束
+      //返回之前将流重置，使之有效
+      string my_list;
+      while(in>>my_list)
+      {
+          cout<<my_list<<endl;
+      }
+      in.clear();//流的置位
+      return in;
+  }
+  ```
+
+* 什么时候 `while(cin>>i)` 会终止？
+
+  * badbit 崩溃的流
+  * failbit IO操作失败
+  * eofbit 文件终止符
+
+
+### 管理输出缓冲
+
+* 导致缓冲刷新，即数据真正写到输出设备或者文件的原因有很多
+  * main的return操作的一部分，缓冲刷新被执行
+  * 缓冲区满
+  * endl 显示刷新
+  * unitbuf可以用来设置流的内部状态，用来清空缓冲区。默认cerr是设置unitbuff属性的，因此写到cerr的都是立即刷新的。
+  * 一个输出流被关联到领一个流。默认cin和cerr都关联到cout，因此读cin或者写cree都会导致cout的缓冲区刷新。
+* 除了endl，flush和ends都可以对缓冲区刷新。 flush 输出后刷新，不附加任何额外字符   ends 输出后增加一个空字符 然后刷新缓冲区
+* 每次输出操作都刷新，那么你在某处指定ubitbuf  直到你的下一个 nounitbuf
+* 如果程序异常终止，那么输出缓冲区不会被刷新。因为在崩溃的时候数据可能正在等待打印；
+* 交互式系统的输入输出都应当相互关联。这样所有输出以及提示信息都会在读操作之前被打印出来。
+* tie方法
+  * 其包含两个版本，一个是不带参数的。此时返回指向输出流的指针。如果本对象当前关联到了一个输出流，那么返回的就是指向这个流的指针，否则则返回空指针。
+  * 也可以接受ostream的指针，此时将自己关联到ostream。即x.tie(&o) x关联到输出流o
+
+## No.2 文件的输入输出
+
+* fstream是继承自iostream 也就是说相同的函数你可以直接用fstream实现多态
+
+* ```C++
+  ifstream in(iflie);    //构建一个ifstream
+  ofstream out;          //输出文件流，但没有关联
+  out.open(ifile+"myfile.text");    //打开指定文件
+  if(out);    //打开检测
+  in.close();    //关闭一个流
+  ```
+
+* 你在新的打开之前应当记得关闭; 常常进行打开检测是一个良好的习惯
+
+* practice
+
+  ```C++
+  //打开一个文件按行读入
+  string myfilename = "file.txt";
+  ifstream in(myfilename);
+  vector<string>context;
+  if(in)
+  {
+      string a_element;
+      while(getline(in, a_element))  //独立输入，只需要单词你可以in>>直接载入
+      {
+          context.push_back(a_element);
+      }
+  }
+  ```
+
+* 文件模式
+
+  * in 只读
+  * out 只写
+  * app每次操作前定位到结尾
+  * ate打开文件后立刻去尾部
+  * trunc截断文件
+  * binary二进制的方法进行IO
+
+* 以out打开会丢弃已有数据，你可以定义app来阻止这样的请况
+
+* 为了保留文件内容，可以显示指定app模式、
+
+  * `ofstream app2("file", ofstream::out | ofstream::app);`
+  * 保留ofstream打开的文件中的已有数据，你可以显示app或者in
+
+## No.3 string流
+
+* 头文件sstream里面的类型定义也是继承与IOstream
+
+* 例如你从一个流读出了一行，你可以将这一行嵌套城string流
+
+* ```C++
+  getline(cin, line);
+  istringstream record(line);    //将记录绑定到行
+  record>>info; //把record写进去
+  //当然你也可以
+  while(record >> word){...}
+  ```
+
+  ​

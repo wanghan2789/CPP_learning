@@ -3,7 +3,25 @@
 #include<string>
 #include<vector>
 #include<cmath>
+#include<istream>
 using namespace std;
+
+istream& TestPractice8(istream& in)
+{
+    //输入一个流的引用，遇到文件终止符结束
+    //返回之前将流重置，使之有效
+    string my_list;
+    while(in>>my_list)
+    {
+        cout<<my_list<<endl;
+    }
+    in.clear();//流的置位
+    return in;
+}
+
+
+
+
 
 class Testconst
 {
