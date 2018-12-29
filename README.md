@@ -1624,3 +1624,103 @@ C seq(n); //seq包含n个元素，这些元素进行了初始化; 此构造函�
 * size方法查询数目; empty判断是否为空; max_size判断最大容纳数值;
 * 只有它的元素定义关系运算符，才能对容器进行整体关系运算
 
+
+## No.3 顺序容器的操作
+
+### 增
+
+* 除了array，所有的标准库容器都提供灵活的内存管理。在运行的时候根据需要进行对容器大小的动态管理。
+
+* 常用操作表:
+
+  * ```C++
+    forward_list有自己专属的insert和emplace
+    vector和string不支持push_front和emplace_front
+    push_back() //返回空, 尾部插入
+    emplace_back(args) //由args创建一个元素，并插入尾部，返回void
+    push_front() //头插
+    emplace_front(args) //头插, 由args创建元素
+    element.insert(p, value) //在迭代器p的位置进行插入
+    element.inset(p, args) //由args创建
+    ele.insert(p, n, t) //插入n个元素t
+    ele.insert(p, b, e) //将另一个容器b~e范围的元素插入到p之前(必须是另一个), 返回新的第一个元素, 对插入空集, 返回p
+    ele.insert(p, {0,1,2}) //将花括号列表插入到p之前的元素，返回新元素第一个位置的迭代器, 对空返回p
+    ```
+
+* 使用insert的返回值可以再某个位置反复的插入元素
+
+* 我们使用push_back会将元素对象传递给它们, 这些对象被拷贝到容器中。而当我们使用emplace的时候，则是将参数传给构造函数进行构造。即，在emplace_back的时候，会直接在内存里面创建元素; 而push_back则需要创建局部临时对象然后压入其中。但是使用emplace的时候，必须注意与构造函数的类型相匹配。
+
+* 某个迭代器`iter.front()`或者`back()`可以查找前或者后的元素;其中，函数的返回值都是引用
+
+* `iter.at(n)` 返回元素n所在位置的引用
+
+### 删除
+
+* 常用操作表
+
+  * ```C++
+    pop_back() //弹出尾部, 返回void
+    pop_front()  //弹出头, 返回void
+    erase(p)  //删除p位置的元素, 返回删除之后的元素位置
+    erase(b, e)  //删除范围元素, 返回删除后元素的位置
+    clear()  //清空
+    ```
+
+* 删除deque首尾之外的元素都会使得迭代器失效; 删除vector或者string的元素, 原本后面的迭代器都会失效。你应当删除一个存在的元素。
+
+* foward_list 单独定义了 inser_after emplace_after 和 erase_after
+
+### 变动容器大小
+
+* `c.resize(n) c.resize(n, val)` reseize大小为n, 初值为val。如果缩小容器，多余的值会被丢弃，并且指针失效; 对vector string deque进行任何resize都可能导致指针失效
+
+### 指针失效
+
+* 增加元素引起失效: 
+  * 对vector和string, 若存储空间重分配, 则引用失效。如果未重分配，则插入位置之后的迭代器失效。
+  * 对deque，除非对首尾元素才做，否则指针失效。如果在首地址插入，则迭代器失效。但是此时指向存在元素的引用和指针不会失效。
+  * 对于list forward_list 迭代器与指针均有效
+* 删除
+  * 对list或者forward_list无影响
+  * 对deque，对首尾之外操作，则失效; 删除尾元素，尾元素后面的迭代器失效。但是其他位置不受影响。删除首元素这些不会影响。
+  * 对vector和string, 删除位置之后的失效;
+* end由于经常失效，因此注意不要保存end
+
+## No.4 Vector的增长
+
+* 容器大小管理
+
+  * ```C++
+    shrink_to_fit() //修剪空间，与令apcity与实际size()一样大
+    capacity() //查询容纳体积
+    reserve(n) //应当至少预留n个元素的空间
+    ```
+
+* 只有迫不得已才会进行内存重调
+
+## No.5 String
+
+### 构造一个string
+
+* 基本方法
+
+  * ```C++
+    string s(cp, n); //s是cp指向的数组的前n个字符的拷贝
+    string s(s_1, pos); //s是 string s_1从pos位置开始直到结束的拷贝。
+    string s(s_1, pos, len_1); //s是pos开始长度为len_1的拷贝, 至多拷贝到结尾。
+    ```
+
+* substr返回一个string, 它是原始string的一部分拷贝。例如 `s = c.substr(0,5)`, 或者 `c.substr(6)` 都表示拷贝前6个元素(从0开始的n个字符的拷贝)。 `c.substr(0,)`这是一个错误的，虽然py可以缺省[0:], 但是显然C++不允许这样做
+
+* s.assign(cp, 7) s是cp的前7个的复制, 其中cp可以使const char*
+
+### 查找操作
+
+* find("test") 查找匹配到的, 返回第一个字符的下标, 否则返回npos
+* rfind() 查找最后一个位置
+
+### 数值转换
+
+* to_string(i) //将i转化为string
+* stod(s) //将s转化成double
