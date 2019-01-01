@@ -4,6 +4,9 @@
 #include<vector>
 #include<cmath>
 #include<istream>
+#include<map>
+#include<set>
+#include<algorithm>
 using namespace std;
 
 istream& TestPractice8(istream& in)
@@ -19,7 +22,26 @@ istream& TestPractice8(istream& in)
     return in;
 }
 
-
+class TestAgorithm
+{
+public:
+    static bool my_judgefunc(const string &a, const string &b)
+    {
+        return a.size()>b.size();
+    }
+    void judge(vector<string>&a)
+    {
+//        int (C::* pfn1)(int) = &C::fun;
+//        bool (TestAgorithm::*pftr)(string) = &TestAgorithm::my_judgefunc;
+        sort(a.begin(), a.end(), my_judgefunc);
+//        for(auto &in : a)
+//        {
+//            cout<< in<< endl;
+//        }
+        for_each(a.begin(), a.end(), [](const string s){cout<<s<<' ';});
+        cout<<endl;
+    }
+};
 
 
 
@@ -218,12 +240,33 @@ int main()
 //    ErrorTest();
 //    int b;
 //    TestPara(b);
-    int a = 0;
+//    map<string, size_t> test;
+//    test["my_learn"]=0;
+//    cout<<test["my_learn"]<<endl;
+//    auto iter = test.begin();
+//    iter->second = 1;
+//    cout<<test["my_learn"]<<endl;
+//    set<string> ::value_type sr;
+//    sr = "0000";
+//    cout<<sr<<endl;
+
+//    set<int>Test={1,2,3,4,5};
+//    cout<<*Test.lower_bound(3) <<endl;
+
+//    int a = 0;
 //    TestTemplate(a);
-    TestInitial mytest;
-    see(mytest);
+//    TestInitial mytest;
+//    see(mytest);
+
+    vector<string> a = {"a", "bcde"};
+    TestAgorithm ta;
+    ta.judge(a);
+
 //    cout <<mytest.a<< endl;
 //    cout <<mytest.b<< endl;
+//    string s = "Hello World!";
+//    string c = s.substr(0,6);
+//    cout<<c<<endl;
     cout << "Hello World!" << endl;
     return 0;
     //this is a re new test

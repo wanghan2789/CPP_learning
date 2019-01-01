@@ -616,8 +616,7 @@
 
   ```C++
   vector<int> v(9);
-  ...
-  for(aotu &lable : v){}  //遍历迭代器
+  ...for(auto &lable : v){}  //遍历迭代器
   ```
 
 * do while是先执行循环体在检查循环条件; 
@@ -1870,4 +1869,154 @@ C seq(n); //seq包含n个元素，这些元素进行了初始化; 此构造函�
     reserve(n);  //保存n个元素时不需要rehash
     ```
 
-    ​
+
+# 第十四章 泛型算法
+
+## No.1 概述
+
+* 大多数算法定义在头文件algorithm里面，标准库还在头文件numeric中定义了一组数值泛型算法。通常情况下，这些算法并不直接操作容器，而是遍历由两个迭代器指定的一个元素范围来进行操作。例如你在查找的时候
+
+  ```C++
+  auto res = find(vec.cbegin(), vec.cend(), val); //查找val是不是在vec里面, 是的话返回对应位置的引用, 否则返回end
+  ```
+
+* 算法不依赖于容器，但是算法依赖于元素类型的操作
+
+* 泛型算法本身不会基于容器，而是基于迭代器; 算法基于迭代器就造就了算法不会直接增删元素，而是可以修改或者移动。
+
+## No.2 泛型算法基础
+
+* 标准库算法均会对输入范围的元素进行操作, 其中，输入范围定义为[begin, end)。基于这两个迭代器将会对你选定的元素进行操作。
+
+### 只读算法
+
+* 仅读取元素但不会修改的一类算法。例如 find count
+* accumulate也是如此, 它定义在numeric中。它接收三个参数，前两个为输入范围，第三个参数是和的初值，返回范围内所有元素和初值的和。和的初值决定了accumulate的返回值类型以及所用 + 的类别
+
+#### algorithm and element type
+
+* 由于const char* 没有定义相关的+运算符, 你在使用accumulate的时候，初始值应采用string类型。
+* 对于读取不可改变元素的算法最好使用cbegin和cend，但是如果返回的迭代器用来修改元素，那么应当使用普通版本的begin和end。
+
+#### operate two sequence
+
+* equal算法用来确定两个序列的值是否相等。相等返回True否则为false。
+* 它接受三个参数, 输入范围以及第二个序列的首迭代器。且需要序列2的元素数量大于等于序列1。但不要求元素类别相同，当然前提是有定义好的==符。
+
+### 写算法
+
+* 一些算法会修改序列中的元素。这要求我们注意容器的数量至少与写元素的数量相同。
+
+* `fill(begin, end, val);`  会将输入范围内的所有元素替换为val
+
+* 算法不检查写操作
+
+  * 例如对fill_n操作一个空容器, 算法本身不能对容器扩容, 这会导致语句执行结果未定义。
+  * 向目的位置迭代器写入数据的算法都假定目标位置足够大，能够容纳要写入的元素。
+
+* back_inserter
+
+  * 插入迭代器能够保证算法有足够的元素空间容纳输出数据。
+
+  * 当我是使用插入迭代器赋值，一个与等号右值相等的元素会被添加到容器里面。
+
+  * 它定义在头文件iterator中的一个函数。
+
+  * 它接受一个指向容器的引用(别名, 本名都可以)，返回一个插入迭代器。当我们需要通过这个迭代器赋值，会自动调用push_back
+
+  * ```C++
+    vector<int> vec;
+    auto it = back_insert(vec);
+    fill_n(it, 10, 0);  //ok, 编译正确。
+    ```
+
+  * 展开来看实质就是将对`it`的所有`*it=` 替换成了`push_back`
+
+* 拷贝算法
+
+  * 接收三个参数，输入范围，也是目的迭代器的起始与终止；新容器的首迭代器。你需保证新的容器足够大。
+  * `replace_copy(begin, end, 0, 42);` 把所有0换成42并且输出一个新序列
+
+### 排序
+
+* 去重复的排序
+
+  * ```C++
+    sort(begin, end); //直接在迭代器begin, end内进行排序
+    auto end_unique = unique(begin, end); //将不重复部分放置前列，返回所有不重复的后置位
+    my.erase(end_unique, end); //删除冗余的后半部分, 及时没有冗余部分也是安全的, 因为明显此时的end == end_unique
+    // nlogn + n + n
+    ```
+
+## No.3 定制操作
+
+### 向算法传递函数
+
+#### predicate 谓词
+
+* 谓词是一个表达式，它返回一个能用做条件的值。标准库算法接受一元谓词和二元谓词。X元代表这个表达式含有X个参数。接受谓词参数的算法对输入序列中的元素调用谓词，因此元素类型必须能转换为谓词的参数类型。一个简单的例子，基于string长度排行字典序。
+
+  * ```C++
+    class TestAgorithm
+    {
+    public:
+        //你的比较函数必须是static或者全局函数, 不然会出现奇怪的报错
+        static bool my_judgefunc(const string &a, const string &b)
+        {
+            return a.size()>b.size();
+        }
+        void judge(vector<string>&a)
+        {
+            sort(a.begin(), a.end(), my_judgefunc);
+            for(auto &in : a)
+            {
+                cout<< in<< endl;
+            }
+        }
+    };
+    ```
+
+* stable_sort: 稳定的排序算法。例如你可以: 按字典序排序, 然后消除重复单词, 按长度重排序, 那么相同长度的自动按照字典序go on
+
+### lambda表达式
+
+* 我们可以向一个算法传递任何类别的可调用对象。对于一个对象或者一个表达式，如果可以对其使用调用运算符 `(args)`, 那么它是可调用的。例如函数, 函数指针以及lambda表达式
+
+* 我们可以把lambda表达式想象成一个没有名字的内联函数，它的类型如下: 
+
+  * `[capture list](parameter list) -> return {func body}`
+  * 其中, capture是一个lambda所在函数中定义的局部变量的列表(通常是空)
+  * 其余部分与函数定义类似, 但是lambda表达式必须使用尾置返回
+
+* lambda表达式不能含有默认参数; 
+
+  * ```C++
+    auto f_lambda = [](const string& a, const string& b){return a.size()>b.size();}
+    //空列表[]表示不适用函数的任何局部变量
+    stable_sort(begin, end, f_lambda);
+
+    //当然你也可以使用捕获参数, s_len是函数体内的局部变量。如果你不捕获，那么是不能使用s_len的
+    auto f_lambda = [s_len](const string& a){return a.size()>=s_len;}
+    ```
+
+* find_if: 输入范围, 以及lambda表达式。返回一个迭代器, 指出第一个满足条件的迭代器，没有满足条件的返回end
+
+* for_each 你可以利用它, 输入范围和lambda表达式进行直接输出
+
+  * `for_each(a.begin(), a.end(), [](const string s){cout<<s<<' ';});`
+
+* 捕获列表只用于局部非静态变量, 静态变量与全局变量是可以直接使用的
+
+* lambda是创建是拷贝捕获的参数, 因此可以保留值。但是如果是引用, 那么运行时就要注意是不是存在的初值了。
+
+* 你可以在捕获列表写一个& = 让编译器推断你需要什么捕获。你也可以混合[&,stra]这样，&是引用，且会自动推断, stra是值而不是引用。
+
+* 为了改变一个被捕获的值拷贝变量的值，需要在lambda表达式增加mutable修饰
+
+  * `[V]()mutable{return ++v;};`
+
+* 如果你的lambda包含多条语句，编译器默认返回void, 否则会进行推断。你可以使用尾置返回类型强制指定类型
+
+  * `[](int a) -> int {if(a) return a; else return a+1;}`
+
+* ​
