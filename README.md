@@ -2019,4 +2019,100 @@ C seq(n); //seq包含n个元素，这些元素进行了初始化; 此构造函�
 
   * `[](int a) -> int {if(a) return a; else return a+1;}`
 
-* ​
+* 参数绑定
+
+  * 我们可以轻易的使用函数替代lambda表达式的功能，但是显然，在需要一元谓词的地方这样做是困难的，为解决参数问题，标准库提供了bind函数。
+
+  * 头文件functional包含了bind。可以将bind视为通用函数适配器。它接受一个可调用对象，生成一个新的可调用对象来适应原来的参数列表。
+
+  * bind的一般形式 `auto n_call = bind(fun_name, arg_list);` n_call是一个可调用对象，arg_list是一个参数列表。
+
+    * ```C++
+      auto check = bind(check_f_name, _1, 6); //_1代表接受一个参数，有一个占位符 如果存在_2 就是两个占位符有两个参数
+      //于是你可以将新的函数代替lambda表达式
+      //占位符用于find_if的反省算法操作
+      find_if(begin, end, bind(check_f_name, _1, 6));
+      ```
+
+  * placeholders。名字`_n`是占位符，它们定义在placeholders的命名空间里面。这个命名空间包含在std。为了使用这些名字，你需要引入std和placeholders。为了使用所有的`_n`, 你可以应用通用的using语句。 `using namespace namespace_name;`
+
+  * bind的参数。bind可以用于修正参数顺序。
+
+    * ```C++
+      auto g = bind(f_name, a, b, _2, c, _1);
+      //新的可调用对象把自己的第三个和第五个参数传给f_name的第一个和第二个参数。
+      ```
+
+  * 如果我们希望传递给bind一个对象而且不去拷贝它，那么应当使用ref函数。例如`bind(printf, ref(os),_1);` ref会返回一个对象，包含给定的引用。cref返回const引用。他们定义在functional里面。
+
+## No.4 迭代器
+
+* 除了容器迭代器，在标准库iterator里面还定义了其他的迭代器。
+  * 插入迭代器
+  * 流迭代器
+  * 反向迭代器
+  * 移动迭代器
+
+### 插入迭代器
+
+* 插入迭代器是一种迭代器适配器，它接受一个容器，生成一个迭代器，能够实现向给定容器添加元素。
+  * `it=t`在it指定的地方插入t
+  * `*it ++it it++` 不会对it做任何事, 只会返回it
+* back_insert  创建一个push_back插入迭代器
+* front_insert push_front
+* inserter 创建一个基于insert的迭代器。这个函数接受第二个参数，这个参数必须是一个指向给定容器的迭代器。元素将被插入到给定迭代器所表示的元素之前。
+
+### iostream迭代器
+
+* istream_iterator 读取输入流, ostream_iterator向输出流写数据。通过使用流迭代器，我们可以用泛型算法从流对象读取数据以及向其写入数据。
+
+### istream_iterator操作
+
+* 标准输入读取数据存入vector
+
+  * ```c++
+    istream_iterator<int>in_iter(cin); //从cin读取int
+    istream_iterator<int>eof; //istream的尾后迭代器, 这是一个空的迭代器
+    while(in_iter != eof) vec.push_back(*in_iter++);
+
+    //你可以简化程序
+    istream_iterator<int>in_iter(cin), eof;
+    vec.push_back(in_iter, eof);
+    ```
+
+* 你可以对算法使用流迭代器 `accumulate(in_iter, eof, 0);`
+
+* 我们可以对任何具有输出运算符<<的类型定义ostream_iterator。
+
+  * ```C++
+    ostream_iterator<int>out_iter(cout, " "); //第二个参数可选。如果你选择，那么每次输出之后会增加space后缀
+    for(auto e:out_iter) *out_iter++ = e; //用<<运算符将e写入out_iter绑定的流对象
+    //这里面，实际上你可以忽略解引用和递增运算。 out_iter = e;在循环体内部也可完成这个需求
+    ```
+
+* `* ++ `实际上对ostream_iterator对象不做任何事情，因此忽略它们对我们的程序没有任何影响。但是推荐使用繁琐的写法，表达相对清晰。
+
+* 上述需求使用copy来打印元素更为方便
+
+  * `copy(vec.begin(), vec.edn(), out_iter);`
+
+* 使用流迭代器还可以处理类类型
+
+  * 我们可以为任何定义了输入运算符>>的类型创建流迭代器对象。
+
+### 反向迭代器
+
+* ++it会向前移动; --it会向后移动。我们可以调用rbegin rend crbegin crend来获得反向迭代器。
+* 一般的反向迭代器是支持递减运算符的，但是流迭代器除外
+* `sort(rbegin, rend);` 会对容器逆序排序
+
+## No.5 泛型算法结构
+
+* 算法所要求的迭代器操作可以分为5个迭代器类别
+  * 输入迭代器  读 不写 单次扫描 只能递增
+  * 输出迭代器  写 不读 单次扫描 只能递增
+  * 前向迭代器  可读写 多扫描 只能递增
+  * 双向迭代器  可读写 多扫描 可增减
+  * 随机访问迭代器  可读写 多扫描 支持所有迭代器运算
+* _if算法。find查找val出现的第一个位置; find_if查找令一个表达式为真的元素位置
+* _copy拷贝原宿版本, 会返回一个完全的元素。
