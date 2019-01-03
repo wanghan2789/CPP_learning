@@ -7,6 +7,7 @@
 #include<map>
 #include<set>
 #include<algorithm>
+#include<iomanip>
 using namespace std;
 
 istream& TestPractice8(istream& in)
@@ -257,7 +258,10 @@ int main()
 //    TestTemplate(a);
 //    TestInitial mytest;
 //    see(mytest);
-
+//    cout.width(8)<<setprecision(3)<<10.0<<endl;
+//    cout<<fixed<<setw(8)<<setprecision(3)<<10.0<<endl;
+    int *p = new int [10]();
+    cout<<*p<<endl;
     vector<string> a = {"a", "bcde"};
     TestAgorithm ta;
     ta.judge(a);
