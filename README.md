@@ -10,7 +10,7 @@
 </td>
 
 <td width="110">
-<a style="text-decoration:none;color: #444" href="www.baidu.com" title="基础算法">
+<a style="text-decoration:none;color: #444" href="algorithm" title="基础算法">
 <img src="/s_ico/al.png" alt="Sample"  width="100" height="100">
 </br><span style="text-align: center;display:block;">基础算法</span>
 </a>
