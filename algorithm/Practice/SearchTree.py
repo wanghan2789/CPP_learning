@@ -18,9 +18,7 @@
 #                   `=---=`
 #           佛祖保佑         永无bug
 #            新年おめでとうございます
-# coding=utf-8
-# -*- coding: UTF-8 -*-
-# 适用于Python3
+#       适用于Python3, write by Malfoy
 
 
 class TreeNode:
@@ -107,7 +105,7 @@ class BaseSearchTreeClass:
         print("----- ", end='')
         self.print_node_value(head)
         if head.lchild:
-            self.deal_tree_branch(head.lchild, False, indent + ("        " if is_right_tree else " |      "))
+            self.deal_tree_branch(head.lchild, False, indent + (" |      " if is_right_tree else "        "))
 
     @staticmethod
     def print_node_value(head):
@@ -151,20 +149,20 @@ class BaseSearchTreeClass:
         tmp = self.head
         if not tmp:
             self.head = TreeNode(element)
-            return
+            return self.head
         while tmp and tmp.value != element:
             if element < tmp.value:
                 if not tmp.lchild:
                     tmp.lchild = TreeNode(element, None, None, tmp)
                     self.size += 1
-                    return
+                    return tmp.lchild
                 else:
                     tmp = tmp.lchild
             else:
                 if not tmp.rchild:
                     tmp.rchild = TreeNode(element, None, None, tmp)
                     self.size += 1
-                    return
+                    return tmp.rchild
                 else:
                     tmp = tmp.rchild
 
@@ -189,8 +187,8 @@ class BaseSearchTreeClass:
         if after_node.parent != deal_ele_node:
             self.transplant(after_node, after_node.rchild)
             # 保留删除节点的右子树
-            after_node.right = deal_ele_node.rchild
-            after_node.right.parent = after_node
+            after_node.rchild = deal_ele_node.rchild
+            after_node.rchild.parent = after_node
         self.transplant(deal_ele_node, after_node)
         after_node.lchild = deal_ele_node.lchild
         after_node.lchild.parent = after_node
@@ -201,7 +199,7 @@ class BaseSearchTreeClass:
         if not replace_node.parent:
             self.head = new_node
         else:
-            if replace_node.is_rchild:
+            if replace_node.is_rchild():
                 replace_node.parent.rchild = new_node
             else:
                 replace_node.parent.lchild = new_node
@@ -223,9 +221,96 @@ class BaseSearchTreeClass:
                 input()
 
 
-if __name__ == '__main__':
-    TestBase = BaseSearchTreeClass()
-    TestBase.test_help([4,2,6,0,3,5,7,7], [3,4])
+#     将node进行左旋或右旋
+# .*. 头指针倒向哪个方向就是如何旋转
+# .*. 多出来的部分转移到空的部分
+class BaseMethod(BaseSearchTreeClass):
+    def left_rotation(self, nodein):
+        node = nodein
+        if not node:
+            return
+        xr = node.rchild
+        if not xr:
+            return
+        node_is_rchild = node.is_rchild()
+        xrl = xr.lchild
+        if xrl:
+            xrl.parent = node
+        node.rchild = xrl
+        xr.parent = node.parent
+        xr.lchild = node
+        node.parent = xr
+        if not xr.parent:
+            self.head = xr
+        else:
+            if node_is_rchild:
+                xr.parent.rchild = xr
+            else:
+                xr.parent.lchild = xr
+        return xr
 
+    def right_rotation(self, nodein):
+        node = nodein
+        if not node:
+            return
+        xr = node.lchild
+        if not xr:
+            return
+        node_is_rchild = node.is_rchild()
+        xrl = xr.rchild
+        if xrl:
+            xrl.parent = node
+        node.lchild = xrl
+        xr.parent = node.parent
+        xr.rchild = node
+        node.parent = xr
+        if not xr.parent:
+            self.head = xr
+        else:
+            if node_is_rchild:
+                xr.parent.rchild = xr
+            else:
+                xr.parent.lchild = xr
+        return xr
+
+    def test_rotate(self, test_insert, is_purse=False):
+        for i in test_insert:
+            self.insert_element(i)
+            # if is_purse:
+            #     input()
+        self.look_construction_of_tree(self.head)
+        print('--Construction Complete--')
+        for i in test_insert:
+            tmp = self.search_element(i)
+            if is_purse:
+                input()
+                print('--Now LRotate' + str(i) + '--')
+                self.left_rotation(tmp)
+                self.look_construction_of_tree(self.head)
+        for i in test_insert:
+            tmp = self.search_element(i)
+            if is_purse:
+                input()
+                print('--Now RRotate' + str(i) + '--')
+                self.right_rotation(tmp)
+                self.look_construction_of_tree(self.head)
+
+
+# 测试区，测试基础的二叉查找树的插入和删除
+def test_base():
+    TestBase = BaseSearchTreeClass()
+    # TestBase.test_help([4,2,6,0,3,5,7,7], [3,4], True)
+    TestBase.test_help([4, 2, 6, 0, 3, 5, 7, 7], [3, 4, 5, 7, 7, 0, 2, 6])
+
+
+# 测试左旋与右旋
+def test_rotation():
+    Testrotate = BaseMethod()
+    Testrotate.test_rotate([4, 2, 6, 0, 3, 5, 7, 7], True)
+
+
+if __name__ == '__main__':
+    Testrotate = BaseMethod()
+    Testrotate.test_rotate([4, 2, 6, 0, 3, 5, 7, 7], True)
 
 
