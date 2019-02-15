@@ -169,19 +169,19 @@ class BaseSearchTreeClass:
     def delete_element(self, element):
         deal_ele_node = self.search_element(element)
         if not deal_ele_node:
-            return
+            return None
         if deal_ele_node.is_leaf():
             self.transplant(deal_ele_node, None)
             self.size -= 1
-            return
+            return None
         if not deal_ele_node.lchild:
-            self.transplant(deal_ele_node, deal_ele_node.rchild)
+            re = self.transplant(deal_ele_node, deal_ele_node.rchild)
             self.size -= 1
-            return
+            return re
         if not deal_ele_node.rchild:
-            self.transplant(deal_ele_node, deal_ele_node.lchild)
+            re = self.transplant(deal_ele_node, deal_ele_node.lchild)
             self.size -= 1
-            return
+            return re
         # 这是一个一般节点，get到刚好比当前节点打的节点
         after_node = self.get_min_node(deal_ele_node.rchild)
         if after_node.parent != deal_ele_node:
@@ -193,7 +193,7 @@ class BaseSearchTreeClass:
         after_node.lchild = deal_ele_node.lchild
         after_node.lchild.parent = after_node
         self.size -= 1
-        return
+        return after_node
 
     def transplant(self, replace_node, new_node):
         if not replace_node.parent:
@@ -205,6 +205,7 @@ class BaseSearchTreeClass:
                 replace_node.parent.lchild = new_node
         if new_node:
             new_node.parent = replace_node.parent
+        return new_node
 
     def test_help(self, test_insert, test_delete, is_purse=False):
         for i in test_insert:
@@ -296,6 +297,127 @@ class BaseMethod(BaseSearchTreeClass):
                 self.look_construction_of_tree(self.head)
 
 
+class AVLTree(BaseMethod):
+    # 需要维护高度信息，只需要保证使用之前已经初始化过即可
+    def __init__(self, value=None):
+        super(AVLTree, self).__init__(value)
+        if self.head:
+            self.head.level = 0
+
+    # 维护高度信息
+    # 重新计算一个序列的高度信息，从node开始直到head
+    def recompute_height(self, node):
+        tmp = node
+        while tmp:
+            tmp.level = self.max_height(node.lchild, node.rchild) + 1
+            tmp = tmp.parent
+
+    @staticmethod
+    def max_height(node1, node2):
+        if node1 and node2:
+            return node1.level if node1.level >= node2.level else node2.level
+        if not node1 and not node2:
+            return -1
+        return node1.level if node1 else node2.level
+
+    def update_height(self, node):
+        if not node:
+            return
+        height = self.max_height(node.lchild, node.rchild)
+        node.level = height + 1
+
+    # 定义avl旋转
+    def avl_left_rotation(self, node):
+        tmp = super().left_rotation(node)
+        self.update_height(tmp.lchild)
+        self.update_height(tmp)
+        return tmp
+
+    def avl_right_rotation(self, node):
+        tmp = super().right_rotation(node)
+        self.update_height(tmp.rchild)
+        self.update_height(tmp)
+        return tmp
+
+    # 对于右-左型，也就是RL型
+    #    7         7                 9
+    #     \   右旋   \      左旋    /  \
+    #     10   ->    9      ->   7    10
+    #    /            \
+    #   9             10
+    #   先对10进行右旋  然后对7左旋
+    def avl_right_left_rotation(self, node):
+        self.avl_right_rotation(node.rchild)
+        return self.avl_left_rotation(node)
+
+    def avl_left_right_rotation(self, node):
+        self.avl_left_rotation(node.lchild)
+        return self.avl_right_rotation(node)
+
+    # 对节点进行rebalanced
+    def rebalanced(self, nodein):
+        if not nodein:
+            return
+        node = nodein
+        while node:
+            upper = node.parent
+            left_height = node.lchild.level if node.lchild else -1
+            right_height = node.rchild.level if node.rchild else -1
+            residual = right_height - left_height
+            # -2代表左子树多了， 2表示右子树多了
+            if residual == 2:
+                if node.rchild.rchild:
+                    node = self.avl_left_rotation(node)
+                    break
+                else:
+                    node = self.avl_right_left_rotation(node)
+                    break
+            elif residual == -2:
+                if node.lchild.lchild:
+                    node = self.avl_right_rotation(node)
+                    break
+                else:
+                    node = self.avl_right_left_rotation(node)
+                    break
+            else:
+                self.update_height(node)
+            node = upper
+
+    def insert_element(self, element):
+        insert_node = super().insert_element(element)
+        insert_node.level = -1
+        self.rebalanced(insert_node)
+        return insert_node
+
+    def delete_element(self, element):
+        delete_node = self.search_element(element)
+        if not delete_node:
+            return
+        next_node = super().delete_element(element)
+        if next_node:
+            min_node = next_node if not next_node.rchild else self.get_min_node(next_node.rchild)
+            self.recompute_height(min_node)
+            self.rebalanced(min_node)
+        else:
+            self.recompute_height(delete_node.parent)
+            self.rebalanced(delete_node.parent)
+        return next_node
+
+    def avl_test_help(self, test_insert, test_delete, is_purse=False):
+        for i in test_insert:
+            self.insert_element(i)
+            print('--Now Insert ' + str(i) + '--')
+            self.look_construction_of_tree(self.head)
+            if is_purse:
+                input()
+        for i in test_delete:
+            self.delete_element(i)
+            print('--Now Delete '+str(i)+'--')
+            self.look_construction_of_tree(self.head)
+            if is_purse:
+                input()
+
+
 # 测试区，测试基础的二叉查找树的插入和删除
 def test_base():
     TestBase = BaseSearchTreeClass()
@@ -309,8 +431,13 @@ def test_rotation():
     Testrotate.test_rotate([4, 2, 6, 0, 3, 5, 7, 7], True)
 
 
+# 测试AVL的插入与删除
+def avl_test():
+    TestAvl = AVLTree()
+    TestAvl.avl_test_help([1,2,3,4,5,6,7], [7,6,5,4,3,2,1], True)
+
+
 if __name__ == '__main__':
-    Testrotate = BaseMethod()
-    Testrotate.test_rotate([4, 2, 6, 0, 3, 5, 7, 7], True)
+    avl_test()
 
 
