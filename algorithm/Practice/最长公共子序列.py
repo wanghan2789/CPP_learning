@@ -1,0 +1,93 @@
+import sys
+import time
+class Solution(object):
+
+    def rec(self, str1, str2, current_str):
+        #BUG
+        if not str1 or not str2:
+            return current_str
+        strnow = str1[0]
+        cal_str1 = self.rec(str1[1:], str2, current_str)
+        flag = False
+        for i in range(len(str2)):
+            if str2[i] == strnow:
+                flag = True
+                break
+        if flag:
+            cal_str2 = self.rec(str1[1:],str2,current_str+strnow)
+        else:
+            cal_str2 = current_str
+        return cal_str1 if len(cal_str1) > len(cal_str2) else cal_str2
+
+    def dp(self, str1, str2):
+        col = len(str1) #col
+        row = len(str2) #row
+        dp = [[0 for i in range(col)] for j in range(row)]
+        #初始化第一行
+        for i in range(col):
+            if i == 0:
+                dp[0][i] = 1 if str2[0] == str1[i] else 0
+                continue
+            dp[0][i] = 1 if str2[0] == str1[i] else max(0, dp[0][i-1])
+        #初始化第一列
+        for i in range(row):
+            if i == 0:
+                dp[i][0] = 1 if str1[0] == str2[i] else 0
+                continue
+            dp[i][0] = 1 if str1[0] == str2[i] else max(0, dp[i-1][0])
+        #core code
+        # 遍历第一行，第二行。。。i行 j列
+        for i in range(1,row):
+            for j in range(1,col):
+                dp[i][j] = max(dp[i-1][j],dp[i][j-1])
+                if str1[j] == str2[i]:
+                    dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
+        return dp[row-1][col-1]
+
+Test = Solution()
+start = time.clock()
+line = 'RMAQXCVAPVMRWQHEEOVFFZWTVNLBGBXPXQSDLRTQUTAICTUSVTRMQCLRKMDMKRBKYVTFTIZVUSVNDXQUHZWIWHIDVMDMIJNUUCBVXANPOTZHZDTLNGITXNOEANLACDISMLSAWUKXFVMQQKFQPQDSTVBUBRBDQYKFYVQUQQOVQZGNCTYLMBGGLFXZXVAVAVVHGHXCFNBGWFIZKEATENRIYQBROCGBFUOXIUMZPMWGYMTAMQKRRBKAFDNZAKVWFUPCGJJKUNZVUVLPKECDARLFIRHVHURFAWYVZAOKVPKZMGMSCUCEDJUAGHJGJFWDQZPDNSCZQTDRZSVLQLKTCCLJZZTGHSJQCEOAWMXDHYFYHGMSZEBXWWLGOSMUZHERILWLAHBUTGOTKVLNDZZQLTTTXNMWNXHHKTLLAFNBAOGDIMSYCVGXVRIUCKVOVPTMHDJZUDGWCZGCBFIXXTVTAQGJBIMUZIMFZPPCKEIGZLNPQZFKMSRDASMNWHLOYDONMCDUVGSFRYDRZVLMXTWCVUBGMJSYTAXJURZBBJLSFNCIETZDDWKQMZXNXMHWIZPUXHDWCPLTNEINESUIDAFSXFBJDREISZPUWZPFYWTKRXWHZTYCZGIJENOUEXKJYAXIPTKEPEKPQRTPPVLLRNUPGWITBFXZYDNLEOMQCOJIKNXMAZFIDWNJDHLHSOTDUIMDOLXSJAQRZKKYGFHUKHPSVTWKFZXWLPSJSKQIMNFNJJFYIMSVNTZPIIPBMMJEXXHETKRNKCCZPJINEVKKKHRBRYQHPBDAEHDNOMAGDTHZPMTRWGLNDXRCUPABNRFLGSILEPRORLUOLQMJJSUGROARTIRKHIPKEFVYPUQLAFQRBVNQRGLNAHQVNDQIVCHYWUQZWBYWEBTJNCXLUVKIECOOBZYUEXIBKKTPYJNWEYFQULPVSMRTDYVVLXOVJTRTTCFTUTLLYXZLWVOUMFHRXWKRRXMLIRHYXVYNMFROOXBVTHWHAZEFNVHBRYSPDRGTWQAUZSFF ZZLTMVMJKVKHYWMAMBGHTSNCQNJRIHBMFDDGZKKZOSYYDZZODFCPEVDAFLBCLXFHGIDIIBQFOSTDEDUQOLHLKAANQLBCJPSQCPMYLTFYJSXXAJYHVTTWLGFOVNJQDJMPTXDDKNBHZVKGRQJNXCOVIOTDWQZTREPCGIBXEJGEKZEDDZDHUNRJZYPISVYKBBZDNTIFTGTQRFGPLKEQMACLMJSBICERGASTQHXCDFOQSMRPNWONZOVCUWEIUKSLGATYOWUNJGRFPVJFLKGZIEWIWKYFCTPVBCCRHMZNJICIHFKIEAGALVFDUAAQEFUTSFTZVFNCFMVATSTBRRPPKOWMOSLPBSHGDKTWEZIFVSWHBFKIAKFTDJWJCLDDUGCHKRAHIUMXHZGDEVJDEFEMSFEWLGEGHXFXLZQHIRXEOHXNDMQOEBKTCDTWQDMXQOQBIJNWCQRZQSXLWFGMYZZPHDRMPBDDUIKVAVTZSQTJNEFZKZDAOYWZIEXQKBCYTDLCNIHRDSDHGRVBUVJCYZBYDHLJACJHNAVZVXDXJWWVTHTRZSXTECOMTLIQLFYFDYNKYNHSKBWWCXZWZRSYFGJOFSMMRKWRNYNKXFUCGIENFQOQUSWSBMNFMZZXSQBSSAVYQZOAXRVSEKKYKVJBSTYLOJTWPYPITDLBFURNKBULYGPWVZDYECSFLUWKGHKNPIJSPRCORNBTNDBHBEFKLNUODGHNTTOGGOQZUQUEUAQQXCWHDMQKOAELQUAEBFANSWETUQVJSPNCDDZWZVIZLOWYYKBKEUUJZGBDPSEDLGSCDFKARFJDEDWYCCLECKWUBSGBFVWLZYFQZJESERSWSUEOBVCNVBGUZFTORAVHISBUPOFZMFJDBNUSUPBLJVZIRTOPXHCSMNEMBVOUPVIYFITKJMJXSQZLFJRFZPSSLKQSIEGENMPIEEARTKZYXMICOBCJWZQHGJKOKOGDGEFHZCONYJXNXKZIRVWDOLVKWKMXHAOQVZCVOBLYYKDSRKYCQQXKBYJC'
+lines = line.split()
+m = lines[0]
+n = lines[1]
+print(Test.dp(m, n))
+end = time.clock()
+print(int(end*1000 - start*1000))
+
+
+try:
+    while True:
+        line = sys.stdin.readline().strip()
+        if line == '':
+            break
+        lines = line.split()
+        m = lines[0]
+        n = lines[1]
+        print(Test.dp(m, n))
+except:
+    pass
+
+
+
+if __name__ == '__main__':
+    Test = Solution()
+    # m = '1A2BC3D4B56'
+    # n = 'B1D23C45B6A'
+    m = 'abcfbc'
+    n = 'abfcab'
+    print(Test.dp(m, n))
+    m = 'programming'
+    n = 'contest'
+    print(Test.dp(m, n))
+
+
+    try:
+        while True:
+            m = input()
+            n = input()
+            print(Test.dp(m, n))
+    except:
+        pass
+    # print(Test.dp(m,n))
+
+
