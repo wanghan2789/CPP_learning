@@ -112,6 +112,7 @@
   * 24位 3*8 = 24
   * 电视系统 YUV420  YUV422  YUV444  节省存储空间
   * 420不是只有Y cb 而是每次扫描只有一种色度分量
+  * **ffmpeg webrtc OpenGL**
 
 # FFmpegの基本使用
 
@@ -243,3 +244,74 @@ LIBS += -lz \
 * ffmpeg -i in.mov -vf crop=in_w-200:in_h-200 -c:v libx264 -c:a copy out.mp4
   * 输入的宽度w-200 高度h-200
   * 裁剪
+
+# 3.回顾基础
+
+## 1.Vim回顾
+
+* 命令模式  i/a 切换  编辑模式
+* vim filename 创建命令
+*  :w 写
+*  :q 退出
+*  :wq 写之后退出
+* 拷贝
+  * yy 拷贝一行
+  * yw 拷贝一个词
+* 粘贴
+  * p
+* 删除
+  * dd 删除一行
+  * dw 删除一个词
+* 光标移动
+  * h左 j下 k上 l右
+  * gg 跳文件头
+  * G 文件尾部
+  * ^ 移动到行首
+  * $ 行尾
+  * 行内按单词移动 一个词 w/ 两个词 2w/ 向后 b/ 2b/
+* 查找
+  *   /关键词     按n查找下一个  N查找前面的一个
+  * 替换  :%s/查找的单词/替换的单词/gc
+    * a 替换所有的
+    * 替换特定的行数    :21,23%s/查找的单词/替换的单词/gc
+* 替换
+* set number    显示行号
+* 多窗口
+  * split横向切割窗口    vsplit纵向切割
+  * 窗口跳转  crtl ww   crtl w[hjkl]
+  * 缩放窗口 crtl w [- =]
+  * close 关闭当前窗口  
+
+## 2.C回顾
+
+* 指针是内存地址   void*  char*
+* %p 打印地址
+* `a = (int*)malloc(sizeof(int));`
+* 数组本身就是个地址，不需要上级地址
+* enum枚举类型   第一个有默认值  则后面每个比上一个多1 枚举用 , 隔开
+* 函数指针
+  *  返回值类型 (*指针变量名) ([参数列表])
+  * int (*f)(int x);
+  * 指针名没有改，但是我可以通过一个函数做很多行为
+* 编译器
+  * gcc -g -O2 -o test test.c -I -L -l
+  * -g: 输出调试信息
+  * -O2: O1不优化
+  * -o: 输出文件
+  * test 输出文件文件名
+  * test.c 源代码
+  * -I: 指定头文件
+  * -L: 指定库文件的位置
+  * -l: 指定是用什么库
+    * 请按顺序书写
+  * gcc -g -c filename.c    生成一个.o库
+  * libtool -static -o libmylib.a  必须以lib开头！但是你配置 -l的时候必须去掉lib 即 gcc ... -lmylib
+* 调试器 GDB lldb
+  * 常用命令
+    * 设置断点  b
+    * 运行程序  r
+    * 单步执行  n
+    * 跳入函数  s
+    * 跳出函数  finish
+    * 打印内容  p  变量名
+    * 查看断点  break list
